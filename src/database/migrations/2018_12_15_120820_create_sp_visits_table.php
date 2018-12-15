@@ -15,9 +15,11 @@ class CreateSpVisitsTable extends Migration
     {
         Schema::create('sp_visits', function (Blueprint $table) {
             $table->increments('id');
-            
+
             $table->integer('SessionID')->unsigned();
             $table->foreign('SessionID')->references('id')->on('sp_sessions')->onDelete('cascade');
+
+            $table->boolean('is_loggedin')->default(false);
 
             $table->string('ip', 40);
             $table->string('method')->nullable();

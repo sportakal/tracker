@@ -40,7 +40,7 @@ class Tracker
         session_start();
         if (isset($_SESSION['this'])) {
             $session_value = $_SESSION['this'];
-            $SessionID = spSession::where('session', $session_value)->first()->id;
+            $SessionID = spSession::where('session', $session_value)->first();
         } else {
             $session_value = strtotime('now');
             $_SESSION['this'] = $session_value;
@@ -120,12 +120,21 @@ class Tracker
 
             $spSession = $spSession->id;
         } else {
-            $spSession = $SessionID;
+            if ($is_user && !$SessionID->is_user) {
+                $ss = $SessionID;
+                $ss->is_user = $is_user;
+                $ss->user_id = $user_id;
+                $ss->save();
+            }
+
+            $spSession = $SessionID->id;
         }
 
         $visits = new spVisit();
 
         $visits->SessionID = $spSession;
+
+        $visits->is_loggedin = $is_user;
 
         $visits->ip = $ip;
         $visits->method = $method;
