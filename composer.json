@@ -1,0 +1,51 @@
+{
+  "name": "sportakal/tracker",
+  "description": "Track Your Visitors Easily and Simpliest Way",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Sinan Portakal",
+      "email": "sinanportakal@yahoo.com"
+    }
+  ],
+  "homepage": "https://github.com/sportakal/tracker",
+  "keywords": [
+    "Laravel",
+    "tracker",
+    "track",
+    "visitors"
+  ],
+  "require": {
+    "illuminate/support": "~5",
+    "jenssegers/agent": "^2.6",
+    "torann/geoip": "^1.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "~7.0",
+    "mockery/mockery": "^1.1",
+    "orchestra/testbench": "~3.0",
+    "sempro/phpunit-pretty-print": "^1.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "sportakal\\tracker\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "sportakal\\tracker\\Tests\\": "tests"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "sportakal\\tracker\\trackerServiceProvider"
+      ],
+      "aliases": {
+        "tracker": "sportakal\\tracker\\Facades\\tracker"
+      }
+    }
+  },
+  "minimum-stability": "stable",
+  "prefer-stable": true
+}
