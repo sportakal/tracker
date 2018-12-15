@@ -120,7 +120,7 @@ class Tracker
 
             $spSession = $spSession->id;
         } else {
-            if ($is_user && !$SessionID->is_user) {
+            if ($check_user && !$SessionID->is_user) {
                 $ss = $SessionID;
                 $ss->is_user = $is_user;
                 $ss->user_id = $user_id;
@@ -134,7 +134,7 @@ class Tracker
 
         $visits->SessionID = $spSession;
 
-        $visits->is_loggedin = $is_user;
+        $visits->is_loggedin = $check_user;
 
         $visits->ip = $ip;
         $visits->method = $method;
