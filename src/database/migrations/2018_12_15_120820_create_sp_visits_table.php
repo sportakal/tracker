@@ -21,6 +21,9 @@ class CreateSpVisitsTable extends Migration
 
             $table->boolean('is_loggedin')->default(false);
 
+            $table->boolean('is_bot')->default(false);
+
+
             $table->string('ip', 40);
             $table->string('method')->nullable();
             $table->boolean('is_ajax')->default(false);

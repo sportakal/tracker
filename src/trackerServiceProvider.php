@@ -15,7 +15,7 @@ class trackerServiceProvider extends ServiceProvider
     {
         // $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'sportakal');
         // $this->loadViewsFrom(__DIR__.'/../resources/views', 'sportakal');
-         $this->loadMigrationsFrom(__DIR__.'/database/migrations/');
+        $this->loadMigrationsFrom(__DIR__ . '/database/migrations/');
         // $this->loadRoutesFrom(__DIR__.'/routes.php');
 
         $router->middleware('Tracker', 'sportakal/tracker/middlewares/Tracker');
@@ -32,7 +32,7 @@ class trackerServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->mergeConfigFrom(__DIR__.'/../config/tracker.php', 'tracker');
+        $this->mergeConfigFrom(__DIR__ . '/../config/tracker.php', 'tracker');
 
         // Register the service the package provides.
         $this->app->singleton('tracker', function ($app) {
@@ -49,7 +49,7 @@ class trackerServiceProvider extends ServiceProvider
     {
         return ['tracker'];
     }
-    
+
     /**
      * Console-specific booting.
      *
@@ -59,7 +59,7 @@ class trackerServiceProvider extends ServiceProvider
     {
         // Publishing the configuration file.
         $this->publishes([
-            __DIR__.'/../config/tracker.php' => config_path('tracker.php'),
+            __DIR__ . '/../config/tracker.php' => config_path('tracker.php'),
         ], 'tracker.config');
 
         // Publishing the views.

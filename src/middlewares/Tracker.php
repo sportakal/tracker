@@ -52,6 +52,8 @@ class Tracker
         $url = $request->server('REQUEST_URI');
         $referer = $request->server('HTTP_REFERER');
 
+        $is_bot = $agent->isRobot();
+
         if (!isset($SessionID)) {
             $spSession = new spSession();
 
@@ -64,7 +66,7 @@ class Tracker
             $user_agent = $request->server('HTTP_USER_AGENT');
             $is_desktop = $agent->isDesktop();
             $is_mobile = $agent->isPhone();
-            $is_bot = $agent->isRobot();
+
             $bot = $agent->robot();
 
             $device = $agent->device();
@@ -135,6 +137,7 @@ class Tracker
         $visits->SessionID = $spSession;
 
         $visits->is_loggedin = $check_user;
+        $visits->is_bot = $is_bot;
 
         $visits->ip = $ip;
         $visits->method = $method;
