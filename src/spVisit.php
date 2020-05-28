@@ -11,29 +11,17 @@ class spVisit extends Model
     protected $guarded = [];
 
 
-    public function session()
+    public function spSession()
     {
-        return $this->belongsTo('sportakal\Tracker\spSession', 'SessionID');
+        return $this->belongsTo('sportakal\Tracker\spSession', 'spSessionID');
     }
 
 
-    public static function getHumanVisitsByDate($startDate = 'first day of this month', $endDate = 'now')
+    public static function getData($startDate = 'first day of this month', $endDate = 'now')
     {
-        return self::orderBy('created_at', 'DESC')
+        return spVisit::where('is_bot', 0)
+            ->where('is_ajax', 0)
             ->where('created_at', '>', date('Y-m-d 00:00:00', strtotime($startDate)))
-            ->where('created_at', '<', date('Y-m-d 23:59:59', strtotime($endDate)))
-            ->where('is_bot', 0);
+            ->where('created_at', '<', date('Y-m-d 23:59:59', strtotime($endDate)));
     }
-
-
-    public static function urlVisits($startDate = 0, $endDate = 'now')
-    {
-        return spVisit::getHumanVisitsByDate($startDate, $endDate)->get()->groupBy('url');
-    }
-
-    public function notAjax()
-    {
-        return 'asdas';
-    }
-
 }

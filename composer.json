@@ -16,7 +16,7 @@
     "visitors"
   ],
   "require": {
-    "illuminate/support": "~5",
+    "illuminate/support": "^5.7",
     "jenssegers/agent": "^2.6",
     "torann/geoip": "^1.0"
   },
