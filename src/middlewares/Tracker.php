@@ -185,6 +185,7 @@ class Tracker
             $spVisit->locale = app()->getLocale();
             $spVisit->save();
             $spCookie = $cookie_value;
+            $_COOKIE['spCookie'] = $cookie_value;
 
 //            if ($spCookie) {
 //                $spCookie->touch();
