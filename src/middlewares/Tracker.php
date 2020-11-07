@@ -169,7 +169,7 @@ class Tracker
             $is_ajax = $request->ajax();
             $fullUrl = $request->fullUrl();
             $urlPath = explode('?', $request->server('REQUEST_URI'));
-            $url = $urlPath[0];
+            $url = $request->path();
             $referer = $request->server('HTTP_REFERER');
 
 
