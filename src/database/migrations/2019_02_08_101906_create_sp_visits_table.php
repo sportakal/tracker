@@ -44,3 +44,4 @@ class CreateSpVisitsTable extends Migration
         Schema::dropIfExists('sp_visits');
     }
 }
+

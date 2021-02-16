@@ -30,7 +30,7 @@ class CreateSpSessionsTable extends Migration
             $table->double('lon')->nullable();
             $table->string('continent_code')->default('');
             $table->string('currency_code')->default('');
-            $table->int('gmt_offset')->default('');
+            $table->integer('gmt_offset')->nullable();
             $table->string('track_ad')->default('');
             $table->char('calling_code', 8)->default('');
 
@@ -52,3 +52,4 @@ class CreateSpSessionsTable extends Migration
         Schema::dropIfExists('sp_sessions');
     }
 }
+

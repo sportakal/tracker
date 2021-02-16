@@ -50,3 +50,4 @@ class CreateSpCookiesTable extends Migration
         Schema::dropIfExists('sp_cookies');
     }
 }
+

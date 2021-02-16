@@ -83,6 +83,7 @@ class Tracker
 
                 setcookie('spCookie', $spCookie->id, time() + 60 * 24 * 365, '/');
                 $cookie_value = $spCookie->id;
+                $_COOKIE['spCookie'] = $cookie_value;
             };
 
             if (!session_id()) {
@@ -185,8 +186,6 @@ class Tracker
             $spVisit->locale = app()->getLocale();
             $spVisit->save();
             $spCookie = $cookie_value;
-            $_COOKIE['spCookie'] = $cookie_value;
-
 //            if ($spCookie) {
 //                $spCookie->touch();
 //                $spCookie->save();
@@ -197,7 +196,7 @@ class Tracker
         Config::set('credentials.country_code', ($spSession->country_code ?? 'US'));
         Config::set('credentials.currency_code', ($spSession->currency_code ?? 'USD'));
         Config::set('credentials.calling_code', ($spSession->calling_code ?? '+1'));
-        Config::set('credentials.gmt_offset', ($spSession->gmt_offset ?? '0'));
+        Config::set('credentials.gmt_offset', ($spSession->gmt_offset ?? 0));
 
 
         return $next($request);
@@ -256,3 +255,4 @@ class Tracker
 //                dd($location);
     }
 }
+
