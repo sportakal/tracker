@@ -4,6 +4,7 @@ namespace sportakal\tracker\middlewares;
 
 use App\Helper\General;
 use Closure;
+use Illuminate\Database\Eloquent\Model;
 use Jenssegers\Agent\Agent;
 use sportakal\tracker\spCookie;
 use sportakal\tracker\spSession;
@@ -11,6 +12,7 @@ use sportakal\tracker\spVisit;
 use sportakal\tracker\Visit;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Http\Request;
+use App\Models\IgUserLog;
 
 
 class Tracker
@@ -108,13 +110,13 @@ class Tracker
             config()->set('speed.afterSession', $microTime);
 
 //            $spSession = true;
-            if (!isset($_SESSION['spSession']) || !$spSession) {
+            if (!isset($_SESSION['spSession']) || !$spSession || ($spSession->default ?? false)) {
                 $microTime = microtime(true) - $microTimeFirst;
                 config()->set('speed.beforeGeoIP', $microTime);
 
 //                $ip = '78.190.181.125';
                 ////////////////////////////////////
-                $location = self::geoIP($ip);
+                $location = self::init_geoip($ip);
                 ////////////////////////////////////
 //                $location = geoip($ip);
 
@@ -148,6 +150,7 @@ class Tracker
                 $spSession->currency_code = $currency_code;
                 $spSession->gmt_offset = $location->time_zone->offset ?? 0;
                 $spSession->calling_code = $location->calling_code ?? null;
+                $spSession->default = $location->default ?? false;
 
 //                $url_components = parse_url($request->fullUrl());
 //                if (isset($url_components['query'])) {
@@ -157,7 +160,9 @@ class Tracker
 
                 $microTime = microtime(true) - $microTimeFirst;
                 config()->set('speed.beforeSessionSave', $microTime);
+
                 $spSession->save();
+
                 $microTime = microtime(true) - $microTimeFirst;
                 config()->set('speed.afterSessionSave', $microTime);
 
@@ -202,18 +207,10 @@ class Tracker
         return $next($request);
     }
 
-    public function geoIP($ip)
+    public function init_geoip($ip)
     {
-        $url = 'https://de-api.ipgeolocation.io/ipgeo?apiKey=4f9507f54b144fe6b60c04bd803b0598&ip=' . $ip;
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 3); //connection timeout in seconds
-
-
-        $page = curl_exec($ch);
         $location = (object)[
-            'ip' => '127.0.0.0',
+            'ip' => $ip,
             'country_code2' => 'US',
             'country_name' => 'United States',
             'city' => 'New Haven',
@@ -238,18 +235,82 @@ class Tracker
             'cached' => false,
         ];
 
+        $geoip = self::geoIP($ip);
+        if (!$geoip) {
+            $geoip = self::geoIP($ip);
 
-        if (!curl_errno($ch)) {
-            $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-            if ($http_code == 200) {
-                $location = json_decode($page);
-            } else {
-                $this->deneme++;
-                if ($this->deneme < 3) {
-                    self::geoIP($ip);
-                }
+            if (!$geoip) {
+                return $location;
             }
         }
+        $location = $geoip;
+        return $location;
+    }
+
+    public function geoIP($ip)
+    {
+        $microtime = microtime(true);
+
+        //$url = 'https://de-api.ipgeolocation.io/ipgeo?apiKey=4f9507f54b144fe6b60c04bd803b0598&ip=' . $ip;
+        $url = 'https://api.ipgeolocation.io/ipgeo?apiKey=4f9507f54b144fe6b60c04bd803b0598&ip=' . $ip;
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 1); //connection timeout in seconds
+        curl_setopt($ch, CURLOPT_TIMEOUT, 1); //connection timeout in seconds
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
+
+        $page = curl_exec($ch);
+
+//        $location = (object)[
+//            'ip' => $ip,
+//            'country_code2' => 'US',
+//            'country_name' => 'United States',
+//            'city' => 'New Haven',
+//            'state' => 'CT',
+//            'district' => 'Connecticut',
+//            'postal_code' => '06510',
+//            'latitude' => 41.31,
+//            'longitude' => -72.92,
+//            'timezone' => (object)[
+//                "name" => "America/New_York",
+//                "offset" => 3,
+//                "is_dst" => false,
+//                "dst_savings" => 0,
+//                'offset' => 0,
+//            ],
+//            'continent_code' => 'NA',
+//            'currency' => (object)[
+//                'code' => 'USD',
+//                'symbol' => '$',
+//            ],
+//            'default' => true,
+//            'cached' => false,
+//        ];
+
+        $location = false;
+
+        $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $error_desc = curl_error($ch);
+        if (!curl_errno($ch)) {
+            if ($http_code == 200) {
+                $location = json_decode($page);
+            }
+        }
+        curl_close($ch);
+
+        $igUserLog = new IgUserLog();
+        $igUserLog->username = 'yyy';
+        $igUserLog->short_code = $ip;
+        $igUserLog->request_url = $url;
+        $igUserLog->main_request = 'ip_geo_location';
+        $igUserLog->domain = '';
+        $igUserLog->http_code = $http_code;
+        $igUserLog->response_time = microtime(true) - $microtime;
+        $igUserLog->error_desc = $error_desc;
+        $igUserLog->save();
+
 
         return $location;
 //                dd($location);
