@@ -33,6 +33,7 @@ class CreateSpSessionsTable extends Migration
             $table->integer('gmt_offset')->nullable();
             $table->string('track_ad')->default('');
             $table->char('calling_code', 8)->default('');
+            $table->boolean('default')->default(false);
 
 
             $table->timestamps();
