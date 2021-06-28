@@ -2,17 +2,14 @@
 
 namespace sportakal\tracker\middlewares;
 
-use App\Helper\General;
 use Closure;
 use Illuminate\Database\Eloquent\Model;
 use Jenssegers\Agent\Agent;
 use sportakal\tracker\spCookie;
 use sportakal\tracker\spSession;
 use sportakal\tracker\spVisit;
-use sportakal\tracker\Visit;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Http\Request;
-use App\Models\IgUserLog;
 
 
 class Tracker
@@ -300,16 +297,16 @@ class Tracker
         }
         curl_close($ch);
 
-        $igUserLog = new IgUserLog();
-        $igUserLog->username = 'yyy';
-        $igUserLog->short_code = $ip;
-        $igUserLog->request_url = $url;
-        $igUserLog->main_request = 'ip_geo_location';
-        $igUserLog->domain = '';
-        $igUserLog->http_code = $http_code;
-        $igUserLog->response_time = microtime(true) - $microtime;
-        $igUserLog->error_desc = $error_desc;
-        $igUserLog->save();
+//        $igUserLog = new IgUserLog();
+//        $igUserLog->username = 'yyy';
+//        $igUserLog->short_code = $ip;
+//        $igUserLog->request_url = $url;
+//        $igUserLog->main_request = 'ip_geo_location';
+//        $igUserLog->domain = '';
+//        $igUserLog->http_code = $http_code;
+//        $igUserLog->response_time = microtime(true) - $microtime;
+//        $igUserLog->error_desc = $error_desc;
+//        $igUserLog->save();
 
 
         return $location;
